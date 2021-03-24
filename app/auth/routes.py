@@ -1,23 +1,17 @@
 from werkzeug.urls import url_parse
 from werkzeug.utils import redirect
-from app import app, db
+from app import db
 from flask import render_template, request, url_for, flash
-from flask_login import current_user, login_user, logout_user, login_required
-from app.forms import RegistrationForm, LoginFrom
+from flask_login import current_user, login_user, logout_user
+from . import auth
+from .forms import RegistrationForm, LoginFrom
 from app.model import User
 
 
-@app.route('/')
-@app.route('/index')
-@login_required
-def index():
-    return render_template('cart.html', title='home')
-
-
-@app.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     form = LoginFrom()
     if form.validate_on_submit():
         user = User.query.filter_by(userId=form.userId.data).first()
@@ -29,22 +23,22 @@ def login():
         # 重定向到登录页面
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('main.index')
         return redirect(next_page)
 
-    return render_template('login.html', title='login', form=form)
+    return render_template('auth/login.html', title='login', form=form)
 
 
-@app.route('/logout')
+@auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("main.index"))
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@auth.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(userId=form.userId.data)
@@ -53,4 +47,4 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('auth/register.html', title='Register', form=form)

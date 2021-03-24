@@ -1,5 +1,10 @@
-from app import app, db
+from app import db, create_app
 from app.model import Admin, Basket, GoodsType, Goods, User
+from flask_migrate import Migrate
+
+
+app = create_app()
+migrate = Migrate(app, db)
 
 
 @app.shell_context_processor
