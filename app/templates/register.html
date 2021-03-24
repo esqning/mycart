@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        <h1>Register</h1>
+
+        <form action="/register" method="post">
+            {{ form.hidden_tag() }}
+
+            <p>
+                 {{ form.userId.label }}<br>
+                 {{ form.userId(size=20)}}
+                 {% for error in form.userId.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                 {% endfor %}
+            </p>
+
+             <p>
+                 {{ form.password.label }}<br>
+                 {{ form.password(size=32)}}
+                 {% for error in form.password.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                 {% endfor %}
+             </p>
+
+            <p>
+                 {{ form.password2.label }}<br>
+                 {{ form.password2(size=32)}}
+                 {% for error in form.password2.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                 {% endfor %}
+             </p>
+
+             <p>
+                {{ form.submit() }}
+            </p>
+
+        </form>
+
+{% endblock  %}
