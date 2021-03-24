@@ -20,7 +20,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginFrom()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(userId=form.userId.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('invalid username or password')
         else:
